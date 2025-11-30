@@ -18,6 +18,70 @@ a_sliding_window.py: 데이터 감정 태깅한 json 생성
 생성한 0~199번 데이터 /data/a_data_train.json
 생성한 200~232번 데이터 /data/a_data_test.json
 
+# AudioLDM Latent Correction Project
+
+이 프로젝트는 AudioLDM1 모델의 latent space를 직접 조작하여 인간 피드백 기반으로 BGM 생성 품질을 개선하는 것을 목표로 합니다.
+
+## 🔥 핵심: 진짜 Latent Correction 방식
+
+### 기존 방식의 한계
+- LoRA + AudioLDM 파이프라인: 실제로는 waveform 비교일 뿐, 진짜 latent correction 아님
+- AudioLDM 파이프라인의 gradient가 latent→audio 경로에서 단절됨
+
+### 새로운 접근: AudioLDM1 Latent 직접 조작
+1. **AudioLDM1 UNet Latent 직접 추출**: 파이프라인 대신 단계별 분해
+2. **작은 MLP로 Latent Correction**: 인간 피드백 기반 residual correction
+3. **VAE + Vocoder 디코딩**: 개선된 latent를 고품질 오디오로 변환
+
+## 프로젝트 구조
+
+```
+├── data/
+│   ├── a_data_train.json       # 0~199번 학습용 데이터
+│   ├── a_data_test.json        # 200~232번 테스트용 데이터  
+│   └── rating_data_train.json  # 🔥 인간 평가 학습 데이터 (핵심)
+├── output/
+│   ├── baseline/               # 기본 AudioLDM1 출력
+│   └── latent_correction/      # 🔥 Latent correction 출력 (신버전)
+├── weight/
+│   └── latent_correction/      # 학습된 correction 모델
+├── lora_training.py            # 🔥 메인 latent correction 학습
+├── lora_inference.py           # 🔥 학습된 모델로 추론
+├── lora_quick_test.py          # 빠른 테스트
+└── baseline_generate.py        # 기본 모델 생성 (비교용)
+```
+
+## 사용법
+
+### 1. 환경 설정
+```bash
+pip install transformers diffusers torch soundfile librosa accelerate
+```
+
+### 2. 빠른 테스트 (첫 실행 권장)
+```bash
+python lora_quick_test.py
+```
+
+### 3. 🔥 Latent Correction 학습 (메인)
+```bash
+python lora_training.py --num_epochs 5 --batch_size 1 --learning_rate 1e-4
+```
+
+### 4. 학습된 모델로 추론
+```bash  
+python lora_inference.py --model_path weight/latent_correction/epoch_5/correction_model.pt
+```
+
+### 5. Colab 실행용
+```python
+# Colab 첫 셀
+!pip install diffusers transformers accelerate soundfile librosa torch torchaudio
+
+# 학습 실행
+!python lora_training.py --num_epochs 3 --batch_size 1
+```
+
 baseline_generate.py
 baseline 실행 후 0~199번 데이터 output/baseline/train/
 => 이때 data/a_data_train 데이터의 n번째 데이터를 넣고 n번째 오디오를 1개씩 생성

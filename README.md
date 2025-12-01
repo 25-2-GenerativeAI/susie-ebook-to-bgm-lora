@@ -1,23 +1,3 @@
-슬라이딩 윈도우로 전처리 후 205개만 데이터 분석용으로 사용
-- 200번째까지 데이터 training, lora 용도
-- 201~205번째 오디오를 발표 test 용도
-
-baseline: 감정 X / LLM api X / AudioLDM1, LoRA X 
-lora: 감정 X / LLM api X / AudioLDM1, LoRA O
-
-- 201~205번째 오디오를 baseline, Model1, Model2 비교
-
-# ============================================== #
-
-파일명
-
-전체 데이터 /data/a_data.txt
-
-a_sliding_window.py: 데이터 감정 태깅한 json 생성
-아래 데이터에서 감정을 태깅할 필요 없음.
-생성한 0~199번 데이터 /data/a_data_train.json
-생성한 200~232번 데이터 /data/a_data_test.json
-
 # AudioLDM Latent Correction Project
 
 이 프로젝트는 AudioLDM1 모델의 latent space를 직접 조작하여 인간 피드백 기반으로 BGM 생성 품질을 개선하는 것을 목표로 합니다.
@@ -81,6 +61,26 @@ python lora_inference.py --model_path weight/latent_correction/epoch_5/correctio
 # 학습 실행
 !python lora_training.py --num_epochs 3 --batch_size 1
 ```
+
+슬라이딩 윈도우로 전처리 후 205개만 데이터 분석용으로 사용
+- 200번째까지 데이터 training, lora 용도
+- 201~205번째 오디오를 발표 test 용도
+
+baseline: 감정 X / LLM api X / AudioLDM1, LoRA X 
+lora: 감정 X / LLM api X / AudioLDM1, LoRA O
+
+- 201~205번째 오디오를 baseline, Model1, Model2 비교
+
+# ============================================== #
+
+파일명
+
+전체 데이터 /data/a_data.txt
+
+a_sliding_window.py: 데이터 감정 태깅한 json 생성
+아래 데이터에서 감정을 태깅할 필요 없음.
+생성한 0~199번 데이터 /data/a_data_train.json
+생성한 200~232번 데이터 /data/a_data_test.json
 
 baseline_generate.py
 baseline 실행 후 0~199번 데이터 output/baseline/train/

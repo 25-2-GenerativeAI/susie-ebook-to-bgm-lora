@@ -62,7 +62,7 @@ python lora_inference.py --model_path weight/latent_correction/epoch_5/correctio
 !python lora_training.py --num_epochs 3 --batch_size 1
 ```
 
-슬라이딩 윈도우로 전처리 후 205개만 데이터 분석용으로 사용
+슬라이딩 윈도우로 전처리 후,
 - 200번째까지 데이터 training, lora 용도
 - 201~205번째 오디오를 발표 test 용도
 

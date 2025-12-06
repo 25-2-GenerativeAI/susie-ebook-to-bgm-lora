@@ -97,7 +97,7 @@ def analyze_emotional_intensity(text_chunk):
 # -------------------------------
 # 실행부
 # -------------------------------
-def main(input_file="data/a_data.txt", output_path="data/a_data_train.json"):
+def main(input_file="data/final_data.txt", output_path="data/final_test.json"):
     if not emotion_classifier:
         print("🚨 Emotion classifier not available.")
         return
